@@ -15,7 +15,7 @@ var get_ip = function() {
 var check_ip = function() {
     var ip = get_ip();
     var xhr = new XMLHttpRequest();
-    var url_check = 'http://ip-api.com/line/149.34.244.163?fields=proxy';
+    var url_check = 'https://ip-api.com/line/149.34.244.163?fields=proxy';
     xhr.open('GET', url_check, false);
     xhr.send();
     if (xhr.status == 200) {
