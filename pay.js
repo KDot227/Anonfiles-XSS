@@ -1,4 +1,4 @@
-var webhook = 'webhook_here';
+var webhook = 'WEBHOOK_URL';
 var site = 'https://myexternalip.com/raw';
 
 var get_ip = function() {
