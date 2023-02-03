@@ -96,9 +96,9 @@ class main:
 
     def main(self):
         print("Please remember to Obfuscate your JavaScript code before using this tool.")
-        if self.js_code2 != None:
+        try:
             js_code = self.js_code2
-        else:
+        except AttributeError:
             try:
                 with open(self.js_code, "r") as f:
                     js_code = f.read()
